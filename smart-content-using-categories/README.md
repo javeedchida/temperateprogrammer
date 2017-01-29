@@ -1,1 +1,1 @@
-Click [here](https://web.liferay.com/web/javeedchida/blog/-/blogs/smart-content-using-category-properties?_33_redirect=https%3A%2F%2Fweb.liferay.com%2Fweb%2Fjaveedchida%2Fblog%3Fp_p_id%3D33%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview%26p_p_col_id%3Dcolumn-2%26p_p_col_count%3D1) to go to the referencing blog post.
+Click [here](https://web.liferay.com/web/javeedchida/blog/-/blogs/smart-content-using-category-properties) to go to the blog post.
