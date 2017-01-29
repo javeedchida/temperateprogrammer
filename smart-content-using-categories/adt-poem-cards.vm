@@ -1,0 +1,46 @@
+#set ($vocabularyLocalService = $serviceLocator.findService("com.liferay.portlet.asset.service.AssetVocabularyLocalService"))
+#set ($vocabularies = $vocabularyLocalService.getGroupVocabularies($getterUtil.getLong($groupId)))
+ 
+### we are interested in one specific vocabulary - poems
+#foreach($voc in $vocabularies)
+    #if ($voc.name == "poems")
+        #set ($poemsVocabularyId = $voc.vocabularyId)
+    #end
+#end
+ 
+#if (!$entries.isEmpty())
+    <div>
+    #foreach ($curEntry in $entries)
+        #set( $renderer = $curEntry.getAssetRenderer() )
+        #set( $link = $renderer.getURLViewInContext($renderRequest, $renderResponse, ''))
+        #set( $journalArticle = $renderer.getArticle() )
+        #set ($articlePrimKey = $journalArticle.getResourcePrimKey())
+         #set ($catLocalService = $serviceLocator.findService("com.liferay.portlet.asset.service.AssetCategoryLocalService"))
+        #set ($catPropertyLocalService = $serviceLocator.findService("com.liferay.portlet.asset.service.AssetCategoryPropertyLocalService"))
+        #set ($articleCats = $catLocalService.getCategories("com.liferay.portlet.journal.model.JournalArticle", $articlePrimKey))
+        #set($viewURL = $assetPublisherHelper.getAssetViewURL($renderRequest, $renderResponse, $curEntry))
+        #set( $document = $saxReaderUtil.read($journalArticle.getContent()) )
+        #set( $rootElement = $document.getRootElement() ) 
+ 
+        #set ($colorCode = "")
+ 
+        ###### if the content item is tied to a category that is in the
+        ###### poems vocabulary, get that category's color_code property
+        #foreach($cat in $articleCats)
+            #if($cat.vocabularyId == $poemsVocabularyId)
+                #set ($colorCode = $catPropertyLocalService.getCategoryProperty($cat.categoryId, "color_code"))
+            #end
+        #end
+ 
+    ###### Display the poem as a card
+    <a href="$viewURL" style="color:white;">
+        <div class="span4" style="background-color: #$colorCode.value; color:white; padding:10px; margin:10px; height:150px; border-radius:10px;">
+            <span style="font-weight:bold;color:white;font-size:20px;">${curEntry.getTitle($locale)}</span>
+            <hr>
+            ${curEntry.getSummary($locale)}
+        </div>
+    </a>
+    #end
+    </div> 
+#end
+
