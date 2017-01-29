@@ -1,0 +1,18 @@
+#set($dlFileEntryLocalService = $serviceLocator.findService("com.liferay.portlet.documentlibrary.service.DLFileEntryLocalService"))
+<div>
+#if (!$entries.isEmpty())
+#foreach ($curEntry in $entries)
+            #set($assetRenderer = $curEntry.getAssetRenderer())
+            #set($title = $htmlUtil.escape($assetRenderer.getTitle($locale)))
+            ### only show matching document types, skip over other types
+            #if($assetRenderer.getType() == "document")
+                #set($fileEntryId = $assetRenderer.getClassPK())
+                #set($fileEntry = $dlFileEntryLocalService.getFileEntry($fileEntryId))
+                #set($version = $fileEntry.getLatestFileVersion(false))
+                #set($viewURL = $themeDisplay.getPortalURL() + $themeDisplay.getPathContext() + "/documents/" + $fileEntry.getGroupId() + "/" + $fileEntry.getFolderId() + "/" + $httpUtil.encodeURL($htmlUtil.unescape($fileEntry.getTitle())) + "/" + $fileEntry.getUuid() + "?version=" + $version.getVersion())
+                <a href="$viewURL" target="_new">$title</a>
+            #end 
+            <br/>
+    #end
+#end    
+</div>
