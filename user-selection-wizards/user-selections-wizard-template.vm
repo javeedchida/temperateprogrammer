@@ -1,0 +1,219 @@
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+<style>
+.button_basic {
+    display:block; 
+    background-color:#$txtBackgroundColor.getData();
+    border-radius: 5px;
+    color:#$txtForegroundColor.getData();
+    text-align:center;
+    vertical-align:middle;
+    font-size:12px;
+    margin:5px; 
+    padding:5px;
+    cursor:pointer;
+}
+
+.button_go {
+    float:left;
+    display:block; 
+    background-color:#13881A;
+    color:#$txtForegroundColor.getData();
+    text-align:center;
+    border-radius: 5px;
+    vertical-align:middle;
+    font-size:12px;
+    margin:5px; 
+    padding:5px;
+    cursor:pointer;    
+}
+
+.button_item {
+    background-color:#$txtBackgroundColor.getData();
+    border-radius: 5px;
+    color:#$txtForegroundColor.getData();
+    text-align:center;
+    vertical-align:middle;
+    font-size:$txtFontSize.getData();
+    margin:5px;
+    padding:30px;
+    cursor:pointer;
+}
+
+.wizard_screen {
+    height:250px;
+}
+
+.box_selection {
+    float:left;
+    background-color: #f4f4f4;
+    border: solid 1px #d0d0d0;
+    color: #888888;
+    border-radius: 5px;
+    text-align:center;
+    vertical-align:middle;
+    font-size:12px;
+    margin:5px; 
+    padding:5px;
+}
+</style>
+
+
+<script>
+var currentScreenId = 1;
+var previousScreens = [];
+var selections = new Map(); // used to track the selection for each screen, key is screenId
+
+    jQuery( document ).ready(function() {
+        console.log("previousScreens=" + previousScreens);
+        
+        jQuery("#btnRestart").click(function(){
+            previousScreens = [];
+            selections.clear();
+            refreshSelectionsString();
+            jQuery(this).hide();
+            jQuery("#lnkBack").hide();
+            jQuery("#btnExecute").hide();
+            jQuery(".wizard_screen").hide();
+            jQuery("#screen1").show();
+        })
+    });
+    
+    function rememberPreviousScreen(screenId) {
+        previousScreens.push(screenId);
+        hideScreen(screenId);
+        jQuery("#lnkBack").show();
+        jQuery("#btnRestart").show();
+        refreshSelectionsString();
+    }
+    
+    function hideScreen(screenId) {
+        jQuery("#screen" + screenId).hide();
+        jQuery(".screen" + screenId).hide();
+        console.log("previousScreens=" + previousScreens);
+    }
+    
+    function showScreen(screenId) {
+        currentScreenId = screenId;
+        jQuery("#screen" + screenId).show();
+        jQuery(".screen" + screenId).show();
+        console.log("currentScreenId=" + currentScreenId);
+    }
+    
+    function refreshSelectionsString() {
+        selectionString = "";
+        for(i = 0; i < previousScreens.length; i++) {
+            if(selections[previousScreens[i]]) {
+                selectionString = selectionString + "<div class='box_selection'>" + selections[previousScreens[i]] + "</div>";
+                if (i+1 < previousScreens.length) {
+                    selectionString += " "
+                }
+            }
+        }
+        jQuery("#selectionsMade").html(selectionString);    
+        jQuery("#selectionsMade").show();
+    }
+    
+    function backupOneScreen() {
+        hideScreen(currentScreenId);
+        screenId = previousScreens.pop();
+        showScreen(screenId);
+        if(previousScreens.length == 0) {
+            jQuery("#lnkBack").hide();
+            jQuery("#btnRestart").hide();
+        }
+        selections[screenId] = ""; // remove the selection for the screen we backed out of
+        refreshSelectionsString();
+    }
+
+    function recordSelection(screenId, value) {
+        selections[screenId] = value;
+        console.log(selections);
+    }
+    
+    // This function must be modified to do what you want to do with the user's selections
+    function fireAway() {
+        alert("Implement the 'fireAway()' handler in the template 'User Selections Wizard Default'. Your selections are in the 'selections' map keyed by screen id");
+        console.log("/someplace?x=" + selections[1] + "&y=" + selections[2]);
+        console.log(jQuery('#txtVisitorEmail').val());
+        
+        jQuery.ajax({
+		    url: "/delegate/rant",
+		    dataType: "json",
+		    method: "POST",
+		    data: {
+                "groupId":$groupId,
+    	        "recordSetId":22517,
+	            "displayIndex":0,
+                "email":jQuery("#txtVisitorEmail").val(),
+                "notes":jQuery("#txtVisitorRant").val(),
+                "userId":20434
+            },
+		    success: function(data){
+		        console.log(data);
+		    },
+		    beforeSend: function(xhr){
+		        //alert('beforeSend');
+		    },
+		    complete: function(){
+		        //alert('complete');
+		    },
+		    error: function(){
+		        //alert('error');
+		    }
+		});        
+
+        // take user back to first screen for another round
+        jQuery("#btnRestart").click(); 
+    }
+</script>
+
+<h4>$txtWizardTitle.getData()</h4>
+
+<div id="statusBar" class="span12" style="margin:5px; padding:5px; ">
+    <div class="button_basic" id="lnkBack" onclick="backupOneScreen();" style="display:none; float:left;">Back</div>
+    <div id="btnRestart" class="button_basic" style="display:none;float:left;"> Start over </div>
+    <div id="btnExecute" class="button_go screen999" style="display:none; float:left;" onclick="fireAway();"> Go </div>
+</div>
+<div class="span12" id="selectionsMade" style="display:none;float:left;"></div>
+
+#if (!$txtScreenId.getSiblings().isEmpty())
+	#foreach ($cur_txtScreenId in $txtScreenId.getSiblings())
+        #if($cur_txtScreenId.getData() == "1")
+    	    <div id="screen$cur_txtScreenId.getData()" class="wizard_screen" style="display:block">
+    	#else
+    	    <div id="screen$cur_txtScreenId.getData()" class="wizard_screen" style="display:none">
+    	#end	
+    
+        <h5>$cur_txtScreenId.txtScreenHeading.getData() </h5>
+        #foreach ($cur_txtOption in $cur_txtScreenId.txtOption.getSiblings())
+            #if($cur_txtOption.getData() != "")
+				#if($cur_txtOption.txtTargetScreenId.getData() == "")
+				<div class="span3 button_item" onclick="location.href='$cur_txtOption.txtTargetUrl.getData()';">
+				#else
+				<div class="span3 button_item" onclick="recordSelection($cur_txtScreenId.getData(), '$cur_txtOption.getData()'); rememberPreviousScreen($cur_txtScreenId.getData()); showScreen($cur_txtOption.txtTargetScreenId.getData());">
+				#end
+				    <span>$cur_txtOption.getData()</span>
+	            </div>
+				
+	        #end
+	    #end      
+
+        ### if there is any custom markup, display it here
+	    #if($cur_txtScreenId.htmlCustomMarkup.txtCustomMarkupTargetScreenId.getData() != "")
+	        <div class="span12">
+	            $cur_txtScreenId.htmlCustomMarkup.getData()
+	        </div>
+	        <div class="span2 button_basic" onclick="rememberPreviousScreen($cur_txtScreenId.getData()); showScreen($cur_txtScreenId.htmlCustomMarkup.txtCustomMarkupTargetScreenId.getData());">
+	            <span>Continue</span>
+	        </div>
+	    #end     
+	    
+	    </div>
+	#end
+#end
+
+<div id="screen999" style="display:none;" class="wizard_screen">
+    <span>$htmlFinalScreenMessage.getData()</span>
+    <div class="span12" style="display:none;text-align:center;" id="confirmationMessage">All done!</div>
+</div>

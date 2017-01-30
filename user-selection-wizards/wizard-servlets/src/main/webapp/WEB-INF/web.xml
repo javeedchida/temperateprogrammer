@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee" id="wizard-servlets" version="3.0">
+  <display-name>wizard-servlets</display-name>
+  <context-param>
+    <param-name>webAppRootKey</param-name>
+    <param-value>web-support-servlets</param-value>
+  </context-param>
+  <servlet>
+    <servlet-name>VisitorRantServlet</servlet-name>
+    <servlet-class>com.liferay.portal.kernel.servlet.PortalDelegateServlet</servlet-class>
+    <init-param>
+      <param-name>servlet-class</param-name>
+      <param-value>com.temperateprogrammer.servlet.VisitorRantServlet</param-value>
+    </init-param>
+    <init-param>
+      <param-name>sub-context</param-name>
+      <param-value>rant</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+</web-app>
