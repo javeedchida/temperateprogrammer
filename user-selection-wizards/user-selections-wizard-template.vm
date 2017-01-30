@@ -143,11 +143,11 @@ var selections = new Map(); // used to track the selection for each screen, key 
 		    method: "POST",
 		    data: {
                 "groupId":$groupId,
-    	        "recordSetId":22517,
+    	        "recordSetId":99999,
 	            "displayIndex":0,
                 "email":jQuery("#txtVisitorEmail").val(),
                 "notes":jQuery("#txtVisitorRant").val(),
-                "userId":20434
+                "userId":99999
             },
 		    success: function(data){
 		        console.log(data);
