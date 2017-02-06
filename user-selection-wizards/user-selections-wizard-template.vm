@@ -35,8 +35,8 @@
     text-align:center;
     vertical-align:middle;
     font-size:$txtFontSize.getData();
-    margin:2px;
-    padding:5px;
+    margin:10px;
+    padding:10px;
     cursor:pointer;
 }
 
@@ -53,8 +53,26 @@
     text-align:center;
     vertical-align:middle;
     font-size:12px;
-    margin:2px; 
-    padding:2px;
+    margin:5px; 
+    padding:5px;
+}
+.connector {
+    float: left;
+    height: 1px;
+    width: 5px;
+    background-color: transparent;
+    border-top: dotted 2px #b0b0b0;
+    border-bottom: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    color: #888888;
+    text-align:center;
+    vertical-align:middle;
+    margin-left:0px;
+    margin-top:20px; 
+    margin-right:0px;
+    margin-bottom:10px;
+    padding:10px;
 }
 </style>
 
@@ -95,6 +113,10 @@ var selections = new Map(); // used to track the selection for each screen, key 
     
     function showScreen(screenId) {
         currentScreenId = screenId;
+        if (screenId == 1) {
+            jQuery("#lnkBack").hide();
+            jQuery("#btnRestart").hide();
+        }
         jQuery("#screen" + screenId).show();
         jQuery(".screen" + screenId).show();
         console.log("currentScreenId=" + currentScreenId);
@@ -120,7 +142,7 @@ var selections = new Map(); // used to track the selection for each screen, key 
             if(selections[previousScreens[i]]) {
                 selectionString = selectionString + "<div class='box_selection' style='cursor:pointer;' onclick='reset(" + previousScreens[i] + ");'>" + selections[previousScreens[i]] + "</div>";
                 if (i+1 < previousScreens.length) {
-                    selectionString += " "
+                    selectionString += " <div class='connector'></div>";
                 }
             }
         }
