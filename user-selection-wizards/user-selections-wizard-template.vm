@@ -41,7 +41,7 @@
 }
 
 .wizard_screen {
-    height:250px;
+    height:275px;
 }
 
 .box_selection {
@@ -62,7 +62,7 @@
 <script>
 var currentScreenId = 1;
 var previousScreens = [];
-var selections = new Map(); // used to track the selection for each screen, key is screenId
+var selections = new Map() // used to track the selection for each screen, key is screenId
 
     jQuery( document ).ready(function() {
         console.log("previousScreens=" + previousScreens);
@@ -100,11 +100,26 @@ var selections = new Map(); // used to track the selection for each screen, key 
         console.log("currentScreenId=" + currentScreenId);
     }
     
+    function reset(screenId) {
+        //alert("resetting " + screenId);
+        jQuery(".wizard_screen").hide();
+        for (i = previousScreens.length-1; i >= 0; i--) {
+            current = previousScreens.pop();
+            if(current == screenId) {
+                break;
+            }
+        }
+        showScreen(screenId);
+        selections[screenId] = ""; // remove the selection for the screen we backed out of
+        refreshSelectionsString();        
+        
+    }
+    
     function refreshSelectionsString() {
         selectionString = "";
         for(i = 0; i < previousScreens.length; i++) {
             if(selections[previousScreens[i]]) {
-                selectionString = selectionString + "<div class='box_selection'>" + selections[previousScreens[i]] + "</div>";
+                selectionString = selectionString + "<div class='box_selection' style='cursor:pointer;' onclick='reset(" + previousScreens[i] + ");'>" + selections[previousScreens[i]] + "</div>";
                 if (i+1 < previousScreens.length) {
                     selectionString += " "
                 }
@@ -131,26 +146,30 @@ var selections = new Map(); // used to track the selection for each screen, key 
         console.log(selections);
     }
     
-    // This function must be modified to do what you want to do with the user's selections
     function fireAway() {
         alert("Implement the 'fireAway()' handler in the template 'User Selections Wizard Default'. Your selections are in the 'selections' map keyed by screen id");
-        console.log("/someplace?x=" + selections[1] + "&y=" + selections[2]);
+        console.log("/someplace?x=" + selections[1] + "&y=" + selections[2] + "&z=" + selections[3]);
+        console.log(jQuery('#txtVisitorFullName').val());
         console.log(jQuery('#txtVisitorEmail').val());
         
         jQuery.ajax({
-		    url: "/delegate/rant",
+		    url: "/delegate/usercapture",
 		    dataType: "json",
 		    method: "POST",
 		    data: {
                 "groupId":$groupId,
-    	        "recordSetId":99999,
+    	        "recordSetId":12806,
 	            "displayIndex":0,
+	            "name":jQuery("#txtVisitorFullName").val(),
                 "email":jQuery("#txtVisitorEmail").val(),
-                "notes":jQuery("#txtVisitorRant").val(),
-                "userId":99999
+                "phone":jQuery("#txtVisitorPhone").val(),
+                "notes":jQuery("#txtVisitorNotes").val(),
+                "userId":10434
             },
 		    success: function(data){
 		        console.log(data);
+		        //jQuery("#confirmationMessage").show("slow");
+		        //location.href = "/someplace?x=" + selections[1] + "&y=" + selections[2] + "&z=" + selections[3];
 		    },
 		    beforeSend: function(xhr){
 		        //alert('beforeSend');
@@ -188,14 +207,9 @@ var selections = new Map(); // used to track the selection for each screen, key 
         <h5>$cur_txtScreenId.txtScreenHeading.getData() </h5>
         #foreach ($cur_txtOption in $cur_txtScreenId.txtOption.getSiblings())
             #if($cur_txtOption.getData() != "")
-				#if($cur_txtOption.txtTargetScreenId.getData() == "")
-				<div class="span3 button_item" onclick="location.href='$cur_txtOption.txtTargetUrl.getData()';">
-				#else
-				<div class="span3 button_item" onclick="recordSelection($cur_txtScreenId.getData(), '$cur_txtOption.getData()'); rememberPreviousScreen($cur_txtScreenId.getData()); showScreen($cur_txtOption.txtTargetScreenId.getData());">
-				#end
-				    <span>$cur_txtOption.getData()</span>
-	            </div>
-				
+            <div class="span3 button_item" onclick="recordSelection($cur_txtScreenId.getData(), '$cur_txtOption.getData()'); rememberPreviousScreen($cur_txtScreenId.getData()); showScreen($cur_txtOption.txtTargetScreenId.getData());">
+	            <span>$cur_txtOption.getData()</span>
+	        </div>
 	        #end
 	    #end      
 
@@ -204,7 +218,7 @@ var selections = new Map(); // used to track the selection for each screen, key 
 	        <div class="span12">
 	            $cur_txtScreenId.htmlCustomMarkup.getData()
 	        </div>
-	        <div class="span2 button_basic" onclick="rememberPreviousScreen($cur_txtScreenId.getData()); showScreen($cur_txtScreenId.htmlCustomMarkup.txtCustomMarkupTargetScreenId.getData());">
+	        <div class="span2 button_basic" onclick="recordSelection($cur_txtScreenId.getData(), '$cur_txtScreenId.htmlCustomMarkup.txtCustomMarkupLabel.getData()'); rememberPreviousScreen($cur_txtScreenId.getData()); showScreen($cur_txtScreenId.htmlCustomMarkup.txtCustomMarkupTargetScreenId.getData());">
 	            <span>Continue</span>
 	        </div>
 	    #end     
