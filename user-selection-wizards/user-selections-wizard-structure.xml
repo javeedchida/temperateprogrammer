@@ -106,6 +106,19 @@
 			</meta-data>
 		</dynamic-element>
 		<dynamic-element dataType="html" fieldNamespace="ddm" indexType="keyword" localizable="true" name="htmlCustomMarkup" readOnly="false" repeatable="false" required="false" showLabel="true" type="ddm-text-html" width="small">
+			<dynamic-element dataType="string" indexType="keyword" localizable="true" name="txtCustomMarkupLabel" readOnly="false" repeatable="false" required="false" showLabel="true" type="text" width="small">
+				<meta-data locale="en_US">
+					<entry name="label">
+						<![CDATA[Custom Markup Label]]>
+					</entry>
+					<entry name="predefinedValue">
+						<![CDATA[]]>
+					</entry>
+					<entry name="tip">
+						<![CDATA[]]>
+					</entry>
+				</meta-data>
+			</dynamic-element>
 			<dynamic-element dataType="string" indexType="keyword" localizable="true" name="txtCustomMarkupTargetScreenId" readOnly="false" repeatable="false" required="false" showLabel="true" type="text" width="small">
 				<meta-data locale="en_US">
 					<entry name="label">
