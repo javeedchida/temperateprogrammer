@@ -101,6 +101,7 @@ var selections = new Map(); // used to track the selection for each screen, key 
     }
     
     function reset(screenId) {
+        jQuery("#btnExecute").hide();
         jQuery(".wizard_screen").hide();
         for (i = previousScreens.length-1; i >= 0; i--) {
             current = previousScreens.pop();
