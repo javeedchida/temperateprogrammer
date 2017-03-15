@@ -32,14 +32,14 @@
             #end
         #end
  
-    ###### Display the poem as a card
-    <a href="$viewURL" style="color:white;">
-        <div class="span4" style="background-color: #$colorCode.value; color:white; padding:10px; margin:10px; height:150px; border-radius:10px;">
-            <span style="font-weight:bold;color:white;font-size:20px;">${curEntry.getTitle($locale)}</span>
-            <hr>
-            ${curEntry.getSummary($locale)}
-        </div>
-    </a>
+        ###### Display the poem as a card
+        <a href="$viewURL" style="color:white;">
+            <div class="span4" style="background-color: #$colorCode.value; color:white; padding:10px; margin:10px; height:150px; border-radius:10px;">
+                <span style="font-weight:bold;color:white;font-size:20px;">${curEntry.getTitle($locale)}</span>
+                <hr>
+                ${curEntry.getSummary($locale)}
+            </div>
+        </a>
     #end
     </div> 
 #end
