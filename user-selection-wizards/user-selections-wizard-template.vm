@@ -172,32 +172,34 @@ var selections = new Map(); // used to track the selection for each screen, key 
         alert("Implement the 'fireAway()' handler in the template 'User Selections Wizard Default'. Your selections are in the 'selections' map keyed by screen id");
         console.log("/someplace?x=" + selections[1] + "&y=" + selections[2]);
         console.log(jQuery('#txtVisitorEmail').val());
-        
-        jQuery.ajax({
-		    url: "/delegate/rant",
-		    dataType: "json",
-		    method: "POST",
-		    data: {
-                "groupId":$groupId,
-    	        "recordSetId":22517,
-	            "displayIndex":0,
-                "email":jQuery("#txtVisitorEmail").val(),
-                "notes":jQuery("#txtVisitorRant").val(),
-                "userId":20434
-            },
-		    success: function(data){
-		        console.log(data);
-		    },
-		    beforeSend: function(xhr){
-		        //alert('beforeSend');
-		    },
-		    complete: function(){
-		        //alert('complete');
-		    },
-		    error: function(){
-		        //alert('error');
-		    }
-		});        
+        // save only non-empty rants
+        if( jQuery("#txtVisitorRant").val() != "" ) {
+            jQuery.ajax({
+    		    url: "/delegate/rant",
+    		    dataType: "json",
+    		    method: "POST",
+    		    data: {
+                    "groupId":$groupId,
+        	        "recordSetId":22517,
+    	            "displayIndex":0,
+                    "email":jQuery("#txtVisitorEmail").val(),
+                    "notes":jQuery("#txtVisitorRant").val(),
+                    "userId":20434
+                },
+    		    success: function(data){
+    		        console.log(data);
+    		    },
+    		    beforeSend: function(xhr){
+    		        //alert('beforeSend');
+    		    },
+    		    complete: function(){
+    		        //alert('complete');
+    		    },
+    		    error: function(){
+    		        //alert('error');
+    		    }
+    		});        
+        }
 
         // take user back to first screen for another round
         jQuery("#btnRestart").click(); 
